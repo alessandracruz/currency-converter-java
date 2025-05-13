@@ -1,136 +1,159 @@
-# Conversor de Moedas – Challenge ONE Back‑End Java
+# Conversor de Moedas – Challenge **ONE Back-end Java**
 
-Aplicação de console desenvolvida como parte do **Oracle + Alura ONE – Back‑End Java**.  
-Converte valores entre moedas utilizando cotações **em tempo real** da API gratuita [exchangerate.host](https://exchangerate.host).
+Aplicação dividida em dois módulos:
+
+| Camada        | Tech                 | Descrição                                                    |
+| ------------- | -------------------- | ------------------------------------------------------------ |
+| **Front-end** | HTML + CSS + JS      | Página responsiva hospedada no **Vercel** para conversão instantânea de moedas |
+| **Back-end**  | Java 11 + HttpClient | Console app que consome a mesma API de câmbio para estudo de OO e boas práticas |
 
 > **Repositório:** `currency-converter-java`  
-> **Objetivo do desafio:** praticar consumo de API, desserialização JSON, coleções, tratamento de erros e princípios de OO em um cenário próximo ao dia a dia de uma pessoa desenvolvedora back‑end.
+> **Objetivo:** praticar consumo de API, desserialização JSON, coleções, tratamento de erros e princípios de OO **(back-end)** e publicar uma **UI leve** em produção **(front-end)**.
 
 ---
 
-## 🗂️ Funcionalidades
+## 🌐 Demonstração ao vivo
 
-| # | Descrição |
-|---|-----------|
-| 1 | Menu textual com **6+ opções** de conversão (USD ⇄ BRL, BRL ⇄ ARS, USD ⇄ COP, etc.) |
-| 2 | Entrada do valor a converter via teclado (`Scanner`) |
-| 3 | Cotações buscadas on‑line a cada execução; nenhum dado hard‑coded |
-| 4 | Resultado formatado (2 casas decimais, símbolo da moeda) |
-| 5 | Tratamento de exceções de rede, entrada inválida e números negativos |
-| 6 | Arquitetura em camadas (`model`, `domain`, `service`, `ui`) para facilitar testes e manutenção |
+Acesse a versão publicada no Vercel e teste agora:
+
+> **🔗 https://currency-converter-java.vercel.app**
 
 ---
 
-## ⚙️ Pré‑requisitos
+## 🗂️ Funcionalidades (Back-End)
 
-| Ferramenta | Versão mínima | Observação |
-|------------|--------------|------------|
-| **JDK**    | 11 (recomendado 17 LTS) | Já inclui `java.net.http.HttpClient` |
-| **Maven**  | 3.8 | Build e dependências (Gson) |
-| **IDE**    | IntelliJ IDEA / VS Code | Opcional, mas recomendado |
-| **Postman**| — | Útil para testar a API (opcional) |
+| #    | Descrição                                                    |
+| ---- | ------------------------------------------------------------ |
+| 1    | Menu textual com **6+ opções** de conversão (USD ⇄ BRL, BRL ⇄ ARS, USD ⇄ COP…) |
+| 2    | Entrada de valor via linha de comando                        |
+| 3    | Cotação **on-line** (exchangerate.host / exchangerate-api)   |
+| 4    | Formatação de moeda (2 casas)                                |
+| 5    | Tratamento de erros de rede, entrada inválida, números negativos |
+| 6    | Arquitetura em camadas (`model`, `domain`, `service`, `ui`)  |
+
+Front-end utiliza a **mesma API** (via fetch) e exibe o resultado na própria página.
 
 ---
 
-## 📦 Dependências (pom.xml)
+## ⚙️ Pré-requisitos (Back-End)
+
+| Ferramenta | Versão mínima           | Obs.                              |
+| ---------- | ----------------------- | --------------------------------- |
+| JDK        | 11 (17 LTS recomendado) | Inclui `java.net.http.HttpClient` |
+| Maven      | 3.8                     | Gerenciamento de dependências     |
+| IDE        | IntelliJ IDEA / VS Code | Opcional                          |
+
+*Para o front-end não há dependências: é HTML estático.*
+
+---
+
+## 📦 Dependências principais (`pom.xml`)
 
 ```xml
-<dependencies>
-    <!-- Desserialização JSON -->
-    <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.10.1</version>
-    </dependency>
-</dependencies>
+<dependency>
+  <groupId>com.google.code.gson</groupId>
+  <artifactId>gson</artifactId>
+  <version>2.10.1</version>
+</dependency>
 ```
-Maven resolve o JAR automaticamente – não é necessário adicionar arquivos à mão.
 
-### Obtendo a **API Key**
+## 🔑 Variável de ambiente
 
-1. Acesse **<https://app.exchangerate-api.com>** e clique em **Get Free Key**.  
-2. Cadastre‑se com seu e‑mail; o painel exibirá uma chave como `j6346d735c999bgr1406cea1`.  
-3. Defina uma **variável de ambiente** para não expor a chave no código:
+Ambos módulos esperam `ER_API_KEY` no ambiente:
 
-   ```bash
-   # Linux/macOS
-   export ER_API_KEY=j6346d735c999bgr1406cea1
-   ```
-O programa lerá System.getenv("ER_API_KEY").
+```bash
+# Linux/macOS
+export ER_API_KEY=SEU_TOKEN_AQUI
 
----
+# Windows (PowerShell)
+setx ER_API_KEY "SEU_TOKEN_AQUI"
+```
 
-## 🏗️ Estrutura do Projeto
+*A chave gratuita é obtida em https://app.exchangerate-api.com (plano Free).*
 
-```pgsql
+------
+
+## 🏗️ Estrutura do projeto
+
+```
 currency-converter-java
-├── pom.xml
-└── src
-    └── main
-        ├── java
-        │   └── com/alura/converter
-        │       ├── model          # Enum Currency
-        │       ├── domain         # POJO Conversion
-        │       ├── service        # Interface + implementação HTTP
-        │       └── ui             # ConsoleApp (classe main)
-        └── resources              # (opcional) banners, configs
+├─ frontend                 # arquivos estáticos enviados ao Vercel
+│  ├─ index.html
+│  └─ api
+|     ├─convert.js
+├─ pom.xml                  # módulo java
+└─ src
+   └─ main/java/com/alura/converter
+       ├─ model
+       ├─ domain
+       ├─ service
+       └─ ui
 ```
----
 
-## 🚀 Instalação e execução
+------
 
-# clone o projeto
-git clone https://github.com/<seu‑usuario>/currency-converter-java.git
+## 🚀 Execução (Back-End)
+
+```
+git clone https://github.com/alessandracruz/currency-converter-java.git
 cd currency-converter-java
 
-# compile e empacote
 mvn clean package
-
-# execute
-java -cp target/currency-converter-java-1.0-SNAPSHOT.jar com.alura.converter.ui.ConsoleApp
+java -cp target/currency-converter-java-1.0-SNAPSHOT.jar \
+     com.alura.converter.ui.ConsoleApp
+```
 
 ---
 
 ## Exemplo de uso
 
+```text
 === Conversor de Moedas ===
-1) USD → BRL
-2) BRL → USD
-3) USD → ARS
-4) ARS → USD
-5) USD → COP
-6) COP → USD
-7) Sair
-Escolha uma opção: 2
-Digite o valor: 100
-100,00 BRL equivalem a 20,55 USD (taxa 0,2055)
+1) USD
+2) BRL
+3) EUR
+4) GBP
+5) JPY
+6) ARS
+7) COP
+0) Sair
+Escolha moeda origem: 1
+Escolha moeda destino: 2
+Digite o valor a converter: 55
 
----
+Resultado => 55.00 USD = 312.06 BRL (rate: 5.6738)
+```
 
-## 🧩 Principais conceitos aplicados
+## 🧩 Conceitos aplicados
 
-- Orientação a Objetos – encapsulamento (Conversion), enumeração (Currency), interface ↔ implementação (ExchangeRateService).
-- Coleções & tipos imutáveis – evita side‑effects.
-- HTTP Client (Java 11+) – requisições GET sem bibliotecas externas.
-- Gson – desserialização do JSON de resposta.
-- Tratamento de exceções – IOException, InterruptedException e validações de entrada.
+- **Orientação a Objetos** – encapsulamento (`Conversion`), enumeração (`Currency`), interface ↔ implementação (`ExchangeRateService`).
+- **Coleções & tipos imutáveis** – evita side-effects.
+- **HTTP Client** (Java 11+) – requisições `GET` sem bibliotecas externas.
+- **Gson** – desserialização do JSON de resposta.
+- **Tratamento de exceções** – `IOException`, `InterruptedException` e validações de entrada.
 
----
+------
 
-## 🗓️ Roadmap / Extras (opcionais)
+- ## 🗺️ Roadmap
 
-- Salvar histórico das conversões em arquivo .csv.
-- Adicionar testes unitários JUnit 5 com mockito para a camada service.
-- Extrair a taxa de conversão para BigDecimal e formatar com NumberFormat.
-- Interface gráfica simples em JavaFX.
+   - [ ] Persistir histórico de conversões (.csv ou SQLite)
+   - [ ] Adicionar testes unitários (JUnit 5 + Mockito)
+   - [ ] Gráfico de variação da taxa em JavaScript (Chart.js)
+   - [ ] Tema Dark/Light no front-end
 
-## 🤝 Contribuições
+------
 
-Pull requests são bem‑vindos! Sinta‑se livre para abrir issues ou sugerir melhorias.
+## 🤝 Contribuindo
+
+Pull requests são bem-vindos! Abra uma **issue** se quiser sugerir funcionalidade ou reportar bug.
+
+------
 
 ## 📝 Licença
 
-Distribuído sob os termos da LICENÇA MIT – consulte o arquivo LICENSE para detalhes.
+Distribuído sob a **LICENÇA MIT**. Consulte o arquivo `LICENSE` para detalhes.
+
+##### 
 
 
 
