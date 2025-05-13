@@ -13,44 +13,79 @@
     <style>
         /* RESET BÁSICO ------------------------------------------------------------*/
         *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
         body{
             font-family:'Poppins',Arial,Helvetica,sans-serif;
             display:flex; flex-direction:column;
             min-height:100vh; background:#fff; color:#111;
         }
+
         /* CONTAINER GERAL ---------------------------------------------------------*/
-        .screen{ max-width:1200px; margin:0 auto; padding:80px 40px 40px; }
+        .screen{
+            max-width:1400px;
+            margin:0 auto;
+            padding:80px 60px 40px;
+        }
+
         /* HERO --------------------------------------------------------------------*/
         .hero{
-            display:flex; gap:80px;
-            align-items:center; justify-content:space-between;
-            flex-wrap:wrap;
+            display:grid;
+            grid-template-columns:1fr 360px;
+            align-items:center;
+            gap:100px;
         }
-        .hero-text{ flex:1 1 420px; }
+
+        .hero-text{ max-width:600px; }
         .hero-text h1{ font-size:clamp(2.4rem,2.2vw+1rem,3.2rem); margin-bottom:12px; }
         .hero-text p { font-size:1.05rem; margin-bottom:24px; line-height:1.45; }
-        .btn{
-            padding:12px 28px; border:0; border-radius:4px;
-            background:#000; color:#fff; font-weight:600; cursor:pointer;
+
+        .btn,
+        #convert{
+            padding:14px 32px;
+            border:0; border-radius:4px;
+            background:#000; color:#fff;
+            font-weight:600; cursor:pointer;
+            font-size:1rem;
         }
-        /* imagem apenas ilustra, pode ser trocada quando quiser  */
-        .hero-img{ flex:0 0 260px; text-align:center; }
-        .hero-img img{ max-width:260px; width:100%; height:auto; }
+
+        .hero-img{ text-align:center; }
+        .hero-img img{
+            max-width:320px;
+            max-height:320px;
+            width:100%; height:auto;
+        }
 
         /* CONVERTER ---------------------------------------------------------------*/
         #converter{
-            background:#f6f6f6; padding:40px 30px; border-radius:10px;
-            margin:60px auto 40px; max-width:680px;
+            background:#f6f6f6;
+            padding:48px 40px;
+            border-radius:10px;
+            margin:60px auto 40px;
+            max-width:780px;
             box-shadow:0 2px 8px rgba(0,0,0,.04);
         }
+
         .converter-form{ display:flex; flex-direction:column; gap:22px; }
-        .row { display:flex; flex-wrap:wrap; gap:24px; }
-        .field{ flex:1 1 240px; display:flex; flex-direction:column; gap:6px; }
-        label{ font-size:.9rem; font-weight:600; }
-        select, input{
-            height:44px; padding:0 12px; border:1px solid #ccc;
-            border-radius:6px; font-size:1rem; width:100%;
+
+        .row{
+            display:flex;
+            flex-wrap:nowrap;
+            gap:24px;
         }
+
+        .field{
+            flex:1 1 50%;
+            display:flex; flex-direction:column; gap:6px;
+        }
+
+        label{ font-size:.9rem; font-weight:600; }
+
+        select, input{
+            height:44px; padding:0 12px;
+            border:1px solid #ccc; border-radius:6px;
+            font-size:1rem; width:100%;
+        }
+
         .result{ margin-top:18px; color:#008000; font-weight:600; }
 
         /* FOOTER ------------------------------------------------------------------*/
@@ -59,14 +94,24 @@
             margin-top:auto; border-top:1px solid #eaeaea;
         }
 
-        /* MEDIA QUERY -------------------------------------------------------------*/
-        @media (max-width: 768px){
+        /* MEDIA QUERY – telas ≤ 768 px -------------------------------------------*/
+        @media (max-width:768px){
             .screen{ padding:60px 20px 30px; }
-            .hero{ flex-direction:column; gap:36px; text-align:center; }
-            .hero-img{ order:-1; }         /* imagem em cima no mobile            */
-            #converter{ margin-top:30px; }  /* aproxima o cartão no mobile         */
+
+            .hero{
+                display:flex;
+                flex-direction:column;
+                gap:36px;
+                text-align:center;
+            }
+            .hero-img{ order:-1; }
+
+            #converter{ max-width:100%; margin-top:30px; }
+            .row{ flex-direction:column; gap:20px; }
+            .field{ flex:1 1 100%; }
         }
     </style>
+
 </head>
 
 <body>
