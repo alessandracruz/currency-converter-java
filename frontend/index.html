@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversor de Moedas</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 420px; margin: 40px auto; }
+        h1  { text-align: center; }
+        label, select, input, button { width: 100%; margin-top: 12px; font-size: 1rem; }
+        #result { margin-top: 20px; font-weight: bold; color: #0b7300; }
+    </style>
+</head>
+<body>
+<h1>Conversor de Moedas</h1>
+
+<label>Moeda de origem
+    <select id="from"></select>
+</label>
+
+<label>Moeda de destino
+    <select id="to"></select>
+</label>
+
+<label>Valor
+    <input type="number" id="amount" placeholder="Ex.: 55.75" step="0.01" min="0">
+</label>
+
+<button id="convert">Converter</button>
+
+<p id="result"></p>
+
+<script>
+    /* ===== CONFIGURAÇÕES ======================================= */
+    const API_KEY  = "d27fa412135b631b4870e5f9";         //  <- SUBSTITUA PELA SUA
+    const BASE_URL = `https://v6.exchangerate-api.com/v6/${API_KEY}/pair`;
+
+    const currencies = ["USD", "BRL", "EUR", "GBP", "JPY", "ARS", "COP"];
+    /* =========================================================== */
+
+    // popula selects
+    const selFrom = document.getElementById("from");
+    const selTo   = document.getElementById("to");
+    currencies.forEach(c => {
+        selFrom.innerHTML += `<option value="${c}">${c}</option>`;
+        selTo.innerHTML   += `<option value="${c}">${c}</option>`;
+    });
+
+    // ação de converter
+    document.getElementById("convert").onclick = async () => {
+        const from   = selFrom.value;
+        const to     = selTo.value;
+        const amount = Number(document.getElementById("amount").value);
+
+        if (!amount || amount <= 0) {
+            alert("Digite um valor positivo.");
+            return;
+        }
+
+        const url = `${BASE_URL}/${from}/${to}/${amount}`;
+        try {
+            const res  = await fetch(url);
+            const data = await res.json();
+
+            if (data.result !== "success") {
+                throw new Error(data["error-type"] || "Falha na API");
+            }
+
+            const converted = data.conversion_result.toFixed(2);
+            const rate      = data.conversion_rate.toFixed(4);
+
+            document.getElementById("result").textContent =
+                `${amount.toFixed(2)} ${from} = ${converted} ${to} (taxa: ${rate})`;
+        } catch (err) {
+            document.getElementById("result").textContent =
+                "Erro: " + err.message;
+        }
+    };
+</script>
+</body>
+</html>
