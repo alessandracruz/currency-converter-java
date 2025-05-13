@@ -56,7 +56,7 @@
             return;
         }
 
-        const url = `${BASE_URL}/${from}/${to}/${amount}`;
+        const url = `/api/convert?from=${from}&to=${to}&amount=${amount}`;
         try {
             const res  = await fetch(url);
             const data = await res.json();
