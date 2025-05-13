@@ -1,80 +1,174 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Conversor de Moedas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-        body { font-family: Arial, sans-serif; max-width: 420px; margin: 40px auto; }
-        h1  { text-align: center; }
-        label, select, input, button { width: 100%; margin-top: 12px; font-size: 1rem; }
-        #result { margin-top: 20px; font-weight: bold; color: #0b7300; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .screen {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-text p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .hero-text button {
+            padding: 10px 20px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .hero-img img {
+            max-width: 250px;
+            width: 100%;
+            height: auto;
+        }
+
+        .converter {
+            background-color: #f6f6f6;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .converter select,
+        .converter input {
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .converter button {
+            padding: 10px 20px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .result {
+            margin-top: 20px;
+            color: green;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            margin-top: auto;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-text,
+            .hero-img {
+                max-width: 100%;
+            }
+
+            .converter select,
+            .converter input {
+                width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
-<h1>Conversor de Moedas</h1>
+<div class="screen">
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Comece a converter moedas</h1>
+            <p>Calcule taxas de câmbio com facilidade.</p>
+            <button onclick="document.getElementById('converter').scrollIntoView({ behavior: 'smooth' })">
+                Converter
+            </button>
+        </div>
+        <div class="hero-img">
+            <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Globo Moedas" />
+        </div>
+    </section>
 
-<label>Moeda de origem
-    <select id="from"></select>
-</label>
+    <section class="converter" id="converter">
+        <div>
+            <label>Moeda de origem</label><br />
+            <select id="from"></select>
 
-<label>Moeda de destino
-    <select id="to"></select>
-</label>
+            <label>Moeda de destino</label><br />
+            <select id="to"></select>
+        </div>
 
-<label>Valor
-    <input type="number" id="amount" placeholder="Ex.: 55.75" step="0.01" min="0">
-</label>
+        <div>
+            <label>Valor</label><br />
+            <input type="number" id="amount" placeholder="Ex.: 55.75" step="0.01" min="0" />
+        </div>
 
-<button id="convert">Converter</button>
+        <button id="convert">Converter agora</button>
 
-<p id="result"></p>
+        <div class="result" id="result"></div>
+    </section>
+</div>
+
+<footer>
+    <p><strong>Currency</strong></p>
+    <p>2025 © Currency Converter. Todos os direitos reservados.</p>
+</footer>
 
 <script>
-    /* ===== CONFIGURAÇÕES ======================================= */
-    const API_KEY  = "d27fa412135b631b4870e5f9";         //  <- SUBSTITUA PELA SUA
-    const BASE_URL = `https://v6.exchangerate-api.com/v6/${API_KEY}/pair`;
-
     const currencies = ["USD", "BRL", "EUR", "GBP", "JPY", "ARS", "COP"];
-    /* =========================================================== */
 
-    // popula selects
     const selFrom = document.getElementById("from");
-    const selTo   = document.getElementById("to");
+    const selTo = document.getElementById("to");
+
     currencies.forEach(c => {
         selFrom.innerHTML += `<option value="${c}">${c}</option>`;
-        selTo.innerHTML   += `<option value="${c}">${c}</option>`;
-    });
+        selTo.innerHTML += `<option value="${c}">${
 
-    // ação de converter
-    document.getElementById("convert").onclick = async () => {
-        const from   = selFrom.value;
-        const to     = selTo.value;
-        const amount = Number(document.getElementById("amount").value);
-
-        if (!amount || amount <= 0) {
-            alert("Digite um valor positivo.");
-            return;
-        }
-
-        const url = `/api/convert?from=${from}&to=${to}&amount=${amount}`;
-        try {
-            const res  = await fetch(url);
-            const data = await res.json();
-
-            if (data.result !== "success") {
-                throw new Error(data["error-type"] || "Falha na API");
-            }
-
-            const converted = data.conversion_result.toFixed(2);
-            const rate      = data.conversion_rate.toFixed(4);
-
-            document.getElementById("result").textContent =
-                `${amount.toFixed(2)} ${from} = ${converted} ${to} (taxa: ${rate})`;
-        } catch (err) {
-            document.getElementById("result").textContent =
-                "Erro: " + err.message;
-        }
-    };
-</script>
-</body>
-</html>
