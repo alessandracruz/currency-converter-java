@@ -1,260 +1,160 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <title>Conversor de Moedas</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <title>Currency Converter</title>
+
+    <!-- responsivo & fontes  -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        /* RESET BÁSICO ------------------------------------------------------------*/
+        *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+        body{
+            font-family:'Poppins',Arial,Helvetica,sans-serif;
+            display:flex; flex-direction:column;
+            min-height:100vh; background:#fff; color:#111;
+        }
+        /* CONTAINER GERAL ---------------------------------------------------------*/
+        .screen{ max-width:1200px; margin:0 auto; padding:80px 40px 40px; }
+        /* HERO --------------------------------------------------------------------*/
+        .hero{
+            display:flex; gap:80px;
+            align-items:center; justify-content:space-between;
+            flex-wrap:wrap;
+        }
+        .hero-text{ flex:1 1 420px; }
+        .hero-text h1{ font-size:clamp(2.4rem,2.2vw+1rem,3.2rem); margin-bottom:12px; }
+        .hero-text p { font-size:1.05rem; margin-bottom:24px; line-height:1.45; }
+        .btn{
+            padding:12px 28px; border:0; border-radius:4px;
+            background:#000; color:#fff; font-weight:600; cursor:pointer;
+        }
+        /* imagem apenas ilustra, pode ser trocada quando quiser  */
+        .hero-img{ flex:0 0 260px; text-align:center; }
+        .hero-img img{ max-width:260px; width:100%; height:auto; }
+
+        /* CONVERTER ---------------------------------------------------------------*/
+        #converter{
+            background:#f6f6f6; padding:40px 30px; border-radius:10px;
+            margin:60px auto 40px; max-width:680px;
+            box-shadow:0 2px 8px rgba(0,0,0,.04);
+        }
+        .converter-form{ display:flex; flex-direction:column; gap:22px; }
+        .row { display:flex; flex-wrap:wrap; gap:24px; }
+        .field{ flex:1 1 240px; display:flex; flex-direction:column; gap:6px; }
+        label{ font-size:.9rem; font-weight:600; }
+        select, input{
+            height:44px; padding:0 12px; border:1px solid #ccc;
+            border-radius:6px; font-size:1rem; width:100%;
+        }
+        .result{ margin-top:18px; color:#008000; font-weight:600; }
+
+        /* FOOTER ------------------------------------------------------------------*/
+        footer{
+            text-align:center; font-size:.88rem; padding:24px 12px;
+            margin-top:auto; border-top:1px solid #eaeaea;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .screen {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .hero {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-        }
-
-        .hero-text {
-            max-width: 600px;
-        }
-
-        .hero-text h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .hero-text p {
-            font-size: 1rem;
-            margin-bottom: 20px;
-        }
-
-        .hero-text button {
-            padding: 10px 20px;
-            background-color: #000;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .hero-img {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-left: 40px;
-        }
-
-        .hero-img img {
-            max-width: 220px;
-            width: 100%;
-            height: auto;
-        }
-
-        .converter {
-            background-color: #f6f6f6;
-            padding: 30px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 0 auto 40px auto;
-            max-width: 500px;
-        }
-
-        .converter-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .row {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            width: 100%;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .field {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            min-width: 45%;
-        }
-
-        .converter select,
-        .converter input {
-            padding: 10px;
-            width: 100%;
-            margin-top: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        .converter button {
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #000;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .result {
-            margin-top: 20px;
-            color: green;
-            font-weight: bold;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
-            margin-top: auto;
-            border-top: 1px solid #eee;
-        }
-
-        @media (max-width: 768px) {
-            .hero {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .hero-text,
-            .hero-img {
-                max-width: 100%;
-            }
-
-            .hero-img {
-                padding-left: 0;
-                margin-top: 30px;
-            }
-
-            .converter select,
-            .converter input {
-                width: 90%;
-            }
-
-            .row {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .field {
-                min-width: 100%;
-            }
+        /* MEDIA QUERY -------------------------------------------------------------*/
+        @media (max-width: 768px){
+            .screen{ padding:60px 20px 30px; }
+            .hero{ flex-direction:column; gap:36px; text-align:center; }
+            .hero-img{ order:-1; }         /* imagem em cima no mobile            */
+            #converter{ margin-top:30px; }  /* aproxima o cartão no mobile         */
         }
     </style>
-
 </head>
+
 <body>
-<div class="screen">
+<main class="screen">
+    <!-- HERO -->
     <section class="hero">
         <div class="hero-text">
             <h1>Comece a converter moedas</h1>
             <p>Calcule taxas de câmbio com facilidade.</p>
-            <button onclick="document.getElementById('converter').scrollIntoView({ behavior: 'smooth' })">
+            <button class="btn"
+                    onclick="document.getElementById('converter').scrollIntoView({behavior:'smooth'})">
                 Converter
             </button>
         </div>
+
         <div class="hero-img">
-            <img src="https://cdn-icons-png.flaticon.com/512/1080/1080619.png" alt="Globo Moedas" />
+            <img src="https://cdn-icons-png.flaticon.com/512/1080/1080619.png"
+                 alt="Ícone de globo com cifrão">
         </div>
     </section>
 
-    <section class="converter" id="converter">
-        <form class="converter-form">
+    <!-- CONVERTER -->
+    <section id="converter">
+        <form class="converter-form" onsubmit="event.preventDefault()">
             <div class="row">
                 <div class="field">
-                    <label>Moeda de origem</label>
+                    <label for="from">Moeda de origem</label>
                     <select id="from"></select>
                 </div>
                 <div class="field">
-                    <label>Moeda de destino</label>
+                    <label for="to">Moeda de destino</label>
                     <select id="to"></select>
                 </div>
             </div>
 
-            <div class="field" style="width: 100%;">
-                <label>Valor</label>
-                <input type="number" id="amount" placeholder="Ex.: 55.75" step="0.01" min="0" />
+            <div class="field">
+                <label for="amount">Valor</label>
+                <input type="number" id="amount" placeholder="Ex.: 55.75"
+                       step="0.01" min="0">
             </div>
 
-            <button type="button" id="convert">Converter agora</button>
+            <button class="btn" type="button" id="convert">Converter agora</button>
             <div class="result" id="result"></div>
         </form>
     </section>
-</div>
+</main>
 
+<!-- FOOTER -->
 <footer>
     <p><strong>Currency</strong></p>
     <p>2025 © Currency Converter. Todos os direitos reservados.</p>
 </footer>
 
+<!-- SCRIPT ---------------------------------------------------------------->
 <script>
-    const currencies = ["USD", "BRL", "EUR", "GBP", "JPY", "ARS", "COP"];
+    const currencies = ["USD","BRL","EUR","GBP","JPY","ARS","COP"];
+    const selFrom    = document.getElementById('from');
+    const selTo      = document.getElementById('to');
 
-    const selFrom = document.getElementById("from");
-    const selTo = document.getElementById("to");
-
-    currencies.forEach(c => {
-        selFrom.innerHTML += `<option value="${c}">${c}</option>`;
-        selTo.innerHTML += `<option value="${c}">${c}</option>`;
+    currencies.forEach(c=>{
+        selFrom.insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`);
+        selTo  .insertAdjacentHTML('beforeend',`<option value="${c}">${c}</option>`);
     });
 
-    document.getElementById("convert").onclick = async () => {
-        const from = selFrom.value;
-        const to = selTo.value;
-        const amount = Number(document.getElementById("amount").value);
+    document.getElementById('convert').addEventListener('click', async ()=>{
+        const from   = selFrom.value;
+        const to     = selTo.value;
+        const amount = Number(document.getElementById('amount').value);
 
-        if (!amount || amount <= 0) {
-            alert("Digite um valor positivo.");
+        if(!amount || amount<=0){
+            alert('Digite um valor positivo.');
             return;
         }
 
-        const url = `/api/convert?from=${from}&to=${to}&amount=${amount}`;
-
-        try {
-            const res = await fetch(url);
+        try{
+            const res  = await fetch(`/api/convert?from=${from}&to=${to}&amount=${amount}`);
             const data = await res.json();
 
-            if (data.result !== "success") {
-                throw new Error(data["error-type"] || "Falha na API");
-            }
+            if(data.result!=='success') throw new Error(data['error-type']||'Falha na API');
 
             const converted = data.conversion_result.toFixed(2);
-            const rate = data.conversion_rate.toFixed(4);
-
-            document.getElementById("result").textContent =
+            const rate      = data.conversion_rate .toFixed(4);
+            document.getElementById('result').textContent =
                 `${amount.toFixed(2)} ${from} = ${converted} ${to} (taxa: ${rate})`;
-        } catch (err) {
-            document.getElementById("result").textContent =
-                "Erro: " + err.message;
+        }catch(err){
+            document.getElementById('result').textContent = 'Erro: '+err.message;
         }
-    };
+    });
 </script>
 </body>
 </html>
